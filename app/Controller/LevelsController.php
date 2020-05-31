@@ -207,7 +207,8 @@ class LevelsController extends AppController {
                     'Level.downloads',
                     'Level.team_count',
                     'Level.comment_count',
-                    'Level.author'
+                    'Level.author',
+                    'Level.last_updated'
             );
 
             $data = array(
@@ -277,7 +278,9 @@ class LevelsController extends AppController {
                 $this->Session->setFlash('Level updated');
                 return $this->redirect(array('action' => 'view', $id));
             } else {
-                $this->Session->setFlash('Could not save level: ' . array_shift($this->Level->validationErrors));
+                $valErrors = array_shift($this->Level->validationErrors);
+                $theError = strlen($valErrors[0]) <= 1 ? $valErrors : $valErrors[0];
+                $this->Session->setFlash('Could not save level: ' . $theError);
             }
         }
 
@@ -345,7 +348,9 @@ class LevelsController extends AppController {
                 $this->Session->setFlash('Your post has been saved.');
                 return $this->redirect(array('action' => 'index'));
             } else {
-                $this->Session->setFlash('Could not save level: ' . array_shift($this->Level->validationErrors));
+		$valErrors = array_shift($this->Level->validationErrors);
+                $theError = strlen($valErrors[0]) <= 1 ? $valErrors : $valErrors[0];
+                $this->Session->setFlash('Could not save level: ' . $theError);
             }
         } else {
             $tags = $this->Level->Tag->find('list');
