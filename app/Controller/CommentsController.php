@@ -6,10 +6,24 @@ App::uses('AppController', 'Controller');
  */
 class CommentsController extends AppController {
 
+    public $uses = array('User', 'Comment');
+
+    public function beforeFilter() {
+        parent::beforeFilter();
+        $this->Auth->deny();
+        $this->Auth->allow('add', 'delete');
+    }
+
     public function add() {
+    	if(!$this->Auth->loggedIn()) {
+      		$this->Auth->login();
+    	}
+
         $this->Comment->set($this->request->data['Comment']);
         $this->Comment->set('user_id', $this->Auth->user('user_id'));
-
+	
+	echo "here";
+	
         if(!$this->Comment->save()) {
             throw new BadRequestException("Unable to save comment.");
         }
